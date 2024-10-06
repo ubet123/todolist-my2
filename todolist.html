@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ToDO List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Oswald", sans-serif;
+            font-weight: 700;
+            margin: 0;
+            padding: 0;
+            background-color: #D4A5FF;
+            color:#1E1E1E;
+        }
+        #container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 2rem;
+        }
+        h1 {
+            font-weight: 600;
+            font-size: 70px;
+            margin-bottom: 20px;
+            color: #3A86FF;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); 
+            text-align: center;
+            width: auto;
+            padding: 1rem;
+            margin-left: 0px;
+            animation: pop-up 1.5s ease forwards;
+        }
+        @keyframes pop-up {
+            0% {
+                transform: translateY(30px); 
+                opacity: 0; 
+            }
+            100% {
+                transform: translateY(0); 
+                opacity: 1; 
+            }
+        }
+        .social-input {
+            margin: 0px 0;
+            display: flex;
+            align-items: center;
+        }
+        .social-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        #instagramBtn {
+            background-color: #FF6B6B;
+            text-align: center;
+            align-items: center;
+            cursor: pointer;
+            border: 2px solid white;
+            font-family: "Oswald", sans-serif;
+            font-weight: 700;
+            padding-top: 0px;
+            padding-bottom: 35px;
+            padding-top: 10px;
+            width: 10rem;
+            height: 2.6rem;
+            font-size: 16px;
+            border-radius: 50px;
+            align-items: center;
+            margin-top: 30px;
+        }
+        #instagramBtn:hover {
+            background-color: #0096FF;
+            border: 2px solid black;
+        }
+        #feedDisplay {
+            width: 25rem;
+            max-width: 600px;
+            height: auto;
+            background: white;
+            border: 1px solid #ddd;
+            padding: 15px;
+            overflow: auto;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        #feedDisplay h2 {
+            margin: 0 0 10px;
+        }
+        .posttotal {
+            background-color: #f9f9f9;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 5px 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap:3rem;
+        }
+        .post {
+            width:30rem;
+        }
+        #optionselect {
+            color: #5a5a5a;
+            font-size: 2rem;
+            margin-top: 20px;
+        }
+        #postInput {
+            width:15rem;
+            border: 3px solid black;
+            border-radius: 25px;
+            margin-top: 15px;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        #feedDisplay {
+            margin-left: 28.5rem;
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+        .feedContainerbut {
+            border: none;
+            border-radius: 5px;
+            background-color: rgb(219, 14, 14);
+            color: white;
+            font-family: "Oswald", sans-serif;
+            padding:10px;
+            cursor: pointer;
+            width: 200px;
+        }
+        .feedContainerbut:hover {
+            background-color: rgb(165, 9, 9);
+        }
+        .donetick {
+            width:30px;
+            height: 30px;
+            cursor: pointer;
+        }
+        .donetick:hover {
+            border: 1px solid rgb(12, 121, 12);
+            border-radius: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>TO-DO List</h1>
+        <div class="social-input">
+            <input oninput="inputadd()" type="text" id="postInput" placeholder="Enter your task here" />
+        </div>
+        <div class="allbut">
+            <button class="button" id="instagramBtn">Add Task</button>
+        </div>
+    </div>
+    <div id="feedDisplay">
+        <h2>Task Display</h2>
+        <div id="feedContainer"></div>
+    </div>
+    <script>
+        const feedContainer = document.getElementById("feedContainer");
+        const postInput = document.getElementById("postInput");
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+        function displayTasks() {
+            feedContainer.innerHTML = "";
+            tasks.forEach((task, index) => {
+                const newPost = document.createElement("div");
+                newPost.className = "posttotal";
+                const newpost2 = document.createElement("div");
+                newpost2.className = "post";
+                newpost2.textContent = task.text;
+                const butchange = document.createElement("button");
+                butchange.className = "feedContainerbut";
+                butchange.innerText = 'Delete Task';
+                const done = document.createElement("div");
+                done.className = "donetick";
+                done.innerHTML = '<img class="donetick" src="mark.png">';
+
+                if (task.done) newpost2.innerHTML = `<del>${task.text}</del>`;
+
+                newPost.appendChild(newpost2);
+                newPost.appendChild(done);
+                newPost.appendChild(butchange);
+
+                feedContainer.appendChild(newPost);
+
+                butchange.addEventListener("click", function() {
+                    tasks.splice(index, 1);
+                    localStorage.setItem("tasks", JSON.stringify(tasks));
+                    displayTasks();
+                });
+
+                done.addEventListener("click", function() {
+                    tasks[index].done = !tasks[index].done;
+                    localStorage.setItem("tasks", JSON.stringify(tasks));
+                    displayTasks();
+                });
+            });
+        }
+
+        document.getElementById("instagramBtn").onclick = function() {
+            const post = postInput.value.trim();
+            if (post) {
+                tasks.push({ text: post, done: false });
+                localStorage.setItem("tasks", JSON.stringify(tasks));
+                postInput.value = "";
+                displayTasks();
+            }
+        };
+
+        displayTasks();
+    </script>
+</body>
+</html>
